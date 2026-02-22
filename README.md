@@ -2,6 +2,8 @@
 
 基于 Qwen3-ASR 的 Windows 实时语音输入工具，支持鼠标、键盘、触摸板多种触发方式。
 
+> 📁 返回主项目: [README.md](../README.md)
+
 ## 功能特性
 
 - 🖱️ **多种触发方式**: 支持鼠标中键/侧键、键盘（Ctrl/Alt/Shift/F1-F12）、触摸板手势
@@ -9,6 +11,7 @@
 - 📝 **实时流式识别**: 基于 WebSocket 协议，低延迟实时转写
 - 💻 **自动上屏**: 识别结果自动输入到当前活动窗口
 - 🌐 **多语言支持**: 支持 30 种语言（中文、英语、日语、韩语、粤语等）
+- ☁️ **多ASR服务商**: 支持本地 Qwen3-ASR 和阿里云智能语音交互
 - 🔄 **自动重连**: 网络中断时自动重连服务器
 - ⚙️ **可配置**: 通过配置文件自定义各项参数
 - 🎯 **智能窗口识别**: 自动识别终端/浏览器/游戏/Office窗口
@@ -28,7 +31,7 @@ pip install -r requirements.txt
 
 ```ini
 [server]
-ws_url = ws://localhost:8765
+ws_url = ws://localhost:8080
 language = auto  # 自动检测语言，或指定具体语言如 Chinese, English
 enable_punctuation = true
 enable_itn = true
@@ -102,7 +105,7 @@ python voice_input_app.py
 python audio_recognize.py audio.wav
 
 # 指定服务器和语言
-python audio_recognize.py audio.wav --url ws://127.0.0.1:8765 --lang zh-CN
+python audio_recognize.py audio.wav --url ws://127.0.0.1:8080 --lang zh-CN
 
 # 保存结果到文件
 python audio_recognize.py audio.wav -o result.txt
@@ -180,7 +183,7 @@ def on_result(text, is_final):
     print(f"{'最终' if is_final else '中间'}: {text}")
 
 client = ASRClient(
-    ws_url="ws://localhost:8765",
+    ws_url="ws://localhost:8080",
     language="auto",
     on_result=on_result
 )
@@ -193,7 +196,7 @@ client.start()
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
-| ws_url | WebSocket 服务器地址 | ws://localhost:8765 |
+| ws_url | WebSocket 服务器地址 | ws://localhost:8080 |
 | language | 语言设置（auto 或具体语言） | auto |
 | enable_punctuation | 启用标点符号 | true |
 | enable_itn | 启用数字转换 | true |
@@ -252,7 +255,7 @@ office_input_method = clipboard
 - 检查 `ws_url` 配置是否正确
 - 确认网络连接正常
 - 检查服务器是否运行
-- 检查防火墙是否允许 8765 端口
+- 检查防火墙是否允许 8080 端口
 
 ### 按键无法触发
 - 检查 `type` 和 `button` 配置是否正确
