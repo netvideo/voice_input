@@ -1,0 +1,40 @@
+; Windows语音输入客户端配置文件
+; 修改后重启程序生效
+
+[server]
+; ASR服务器WebSocket地址
+ws_url = wss://your-asr-server.com/asr/v1/stream
+
+; 语言代码: zh-CN(中文), en-US(英语), ja-JP(日语)等
+language = zh-CN
+
+; 是否启用标点符号: true 或 false
+enable_punctuation = true
+
+; 是否启用ITN数字转换(中文数字转阿拉伯数字): true 或 false
+enable_itn = true
+
+[trigger]
+; 触发方式: mouse(鼠标) 或 keyboard(键盘)
+type = mouse
+
+; 触发按键:
+; - mouse类型: middle(中键), x1(侧键-后退), x2(侧键-前进), left(左键), right(右键)
+; - keyboard类型: caps_lock
+button = middle
+
+; 长按阈值(毫秒)，按住超过此时间开始录音
+hold_threshold_ms = 500
+
+[input]
+; 是否使用剪贴板输入中文(推荐开启): true 或 false
+use_clipboard = true
+
+; 是否显示中间识别结果: true 或 false
+show_intermediate = false
+
+[audio]
+; 音频块时长(毫秒)，影响延迟和实时性
+; 值越小延迟越低，但网络开销越大
+; 推荐值: 50-200
+chunk_duration_ms = 100
