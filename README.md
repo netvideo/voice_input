@@ -141,17 +141,20 @@ python audio_recognize.py audio.wav -o result.txt
 voice_input/
 ├── __init__.py                 # 包初始化
 ├── voice_input_app.py          # 主程序
-├── keyboard_hook.py           # 全局键盘钩子
-├── mouse_hook.py              # 全局鼠标钩子
-├── touchpad_hook.py           # 触摸板手势钩子
-├── audio_capture.py           # 音频采集模块
-├── asr_client.py              # ASR WebSocket客户端
-├── text_input.py              # 文本输入模块
-├── ime_input.py               # 智能文本输入（自动窗口识别）
-├── audio_recognize.py         # 音频文件识别工具
-├── audio_file_recognizer.py   # 音频识别模块
-├── config.ini                 # 配置文件
-└── README.md                  # 本文档
+├── keyboard_hook.py            # 全局键盘钩子
+├── mouse_hook.py               # 全局鼠标钩子
+├── touchpad_hook.py            # 触摸板手势钩子
+├── caps_lock_hook.py           # Caps Lock 钩子
+├── audio_capture.py            # 音频采集模块
+├── asr_client.py               # ASR WebSocket客户端（本地）
+├── ali_asr_client.py           # 阿里云 ASR 客户端
+├── ali_asr_protocol.md         # 阿里云 ASR 协议文档
+├── text_input.py               # 文本输入模块
+├── ime_input.py                # 智能文本输入（自动窗口识别）
+├── audio_recognize.py          # 音频文件识别工具
+├── audio_file_recognizer.py    # 音频识别模块
+├── config.ini                  # 配置文件
+└── README.md                   # 本文档
 ```
 
 ## 模块说明
@@ -193,7 +196,7 @@ python audio_recognize.py audio.wav -o result.txt
 ```
 
 ### asr_client.py
-ASR WebSocket 客户端，实现流式语音识别协议。
+ASR WebSocket 客户端，实现流式语音识别协议（本地 Qwen3-ASR）。
 
 ```python
 from asr_client import ASRClient
@@ -209,16 +212,52 @@ client = ASRClient(
 client.start()
 ```
 
+### ali_asr_client.py
+阿里云智能语音交互客户端，实现阿里云 WebSocket 实时语音识别协议。
+
+```python
+from ali_asr_client import AliASRClient
+
+def on_result(text, is_final):
+    print(f"{'最终' if is_final else '中间'}: {text}")
+
+client = AliASRClient(
+    token="your_token",
+    appkey="your_appkey",
+    on_result=on_result
+)
+client.start()
+```
+
+详见 [ali_asr_protocol.md](ali_asr_protocol.md)
+
 ## 配置说明
 
 ### 服务器配置 [server]
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
-| ws_url | WebSocket 服务器地址 | ws://localhost:8080 |
-| language | 语言设置（auto 或具体语言） | auto |
+| provider | ASR服务提供商: local 或 ali | local |
+| ws_url | WebSocket 服务器地址（local模式） | ws://127.0.0.1:8080 |
+| ali_token | 阿里云访问Token（ali模式） | - |
+| ali_appkey | 阿里云 AppKey（ali模式） | - |
+| ali_gateway | 阿里云网关地址 | wss://nls-gateway-cn-shanghai.aliyuncs.com/ws/v1 |
+| language | 语言设置（auto 或具体语言） | zh-CN |
 | enable_punctuation | 启用标点符号 | true |
 | enable_itn | 启用数字转换 | true |
+
+### 使用阿里云 ASR
+
+1. 在阿里云开通智能语音交互服务
+2. 获取 Token 和 AppKey：https://help.aliyun.com/zh/isi/overview-of-obtaining-an-access-token
+3. 修改 `config.ini`：
+
+```ini
+[server]
+provider = ali
+ali_token = 你的Token
+ali_appkey = 你的Appkey
+```
 
 ### 触发配置 [trigger]
 
