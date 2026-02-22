@@ -156,6 +156,25 @@ voice_input/
 
 ## 模块说明
 
+### voice_input_app.py
+主程序入口，整合所有模块实现完整的语音输入功能。
+
+```bash
+# 运行主程序
+python voice_input_app.py
+
+# 查看帮助
+python voice_input_app.py --help
+```
+
+启动后：
+1. 加载配置文件
+2. 初始化 ASR 客户端（本地或阿里云）
+3. 设置触发器（鼠标/键盘/触摸板）
+4. 等待触发事件
+5. 录音并识别
+6. 自动输入识别结果
+
 ### ime_input.py
 智能文本输入模块，自动检测窗口类型并选择最佳输入方式。
 
